@@ -9,9 +9,9 @@ This program is designed to:
 
 ### Installation Instructions
 Requirements: 
- - Python3
- - git
-
+-Python3
+-git
+<br>
 * Clone the repo
 
     git clone https://github.com/cnoott/inventory_barcode_scanner.git
