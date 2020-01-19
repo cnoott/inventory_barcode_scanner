@@ -1,5 +1,4 @@
 TODO
 -----
 1. Add README.md
-2. Add upload to google drive feature
-3. Add datetime feature
+2. Create database_creator.py

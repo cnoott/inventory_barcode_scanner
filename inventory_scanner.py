@@ -3,11 +3,12 @@
 from collections import Counter
 import csv
 import datetime
+import database_reference
 
 input_list = []
 num_of = []
 inventory_dict = {}
-print("Begin Scanning Items. Type enter when done: ")
+print("Welcome to inventory_barcode_scanner V0.1\nBegin Scanning Items. Type enter when done: ")
 while True: #Puts user input into input_list
     items = input(">> ")
     if items == "":
@@ -24,12 +25,15 @@ for id in input_list: #Counts qty of unique items in input_list
         inventory_dict[str(id)] = counter
 print("File saved at","inventory_{}".format(datetime.date.today()))
 print("barcode | quantity\n")
-
-file = open('inventory_{}.csv'.format(datetime.date.today()),"w+")
-file.write("barcode,quantity\n")
 for keys in inventory_dict:
-    file.write("{},{}\n".format(keys,inventory_dict[keys]))
     print(keys,"      ",inventory_dict[keys])
-            
-        
+
+#writing to new file
+database = database_reference.database
+with open("./inventories/inventory_{}.csv".format(datetime.date.today()), "w+") as output:
+    output.write("uid,name,qty\n")
+    for UID in num_of:
+        for database_UID in database:
+            if UID == database_UID:
+                output.write("{},{},{}\n".format(UID,database[UID],inventory_dict[UID]))
 
