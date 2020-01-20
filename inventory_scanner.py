@@ -1,16 +1,17 @@
 #Written by Liam Amadio
 #01/12/2020
-from collections import Counter
 import csv
 import datetime
 import database_reference
+import time
 
 input_list = []
 num_of = []
 inventory_dict = {}
-print("Welcome to inventory_barcode_scanner V0.1\nBegin Scanning Items. Type enter when done: ")
+print("\nWelcome to inventory_barcode_scanner V1.1\n\nBegin Scanning Items. Type enter when done:")
 while True: #Puts user input into input_list
     items = input(">> ")
+    time.sleep(0.18)
     if items == "":
         break
     input_list.append(items)
@@ -31,7 +32,11 @@ for keys in inventory_dict:
 
 #writing to new file
 database = database_reference.database
-#error prevention
+#error prevention (checks if a UID doesnt have a name assigned to it in database)
+for id in num_of:
+    if id not in database:
+        print("Error:",id, "not in database; given name 'no_name given'")
+        database[id] = "no_name_given"
 
 with open("./inventories/inventory_{}.csv".format(datetime.date.today()), "w+") as output:
     output.write("uid,name,qty\n")
