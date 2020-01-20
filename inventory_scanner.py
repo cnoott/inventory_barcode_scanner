@@ -25,11 +25,14 @@ for id in input_list: #Counts qty of unique items in input_list
         inventory_dict[str(id)] = counter
 print("File saved at","inventory_{}".format(datetime.date.today()))
 print("barcode | quantity\n")
+
 for keys in inventory_dict:
     print(keys,"      ",inventory_dict[keys])
 
 #writing to new file
 database = database_reference.database
+#error prevention
+
 with open("./inventories/inventory_{}.csv".format(datetime.date.today()), "w+") as output:
     output.write("uid,name,qty\n")
     for UID in num_of:
