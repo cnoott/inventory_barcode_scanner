@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #Written by Liam Amadio
 #01/12/2020
 import csv
