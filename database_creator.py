@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #Written by Liam Amadio
 #09/19/2020
 import time

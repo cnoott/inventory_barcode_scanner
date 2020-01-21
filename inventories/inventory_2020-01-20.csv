@@ -1,8 +1,5 @@
 uid,name,qty
-001,chair,4
-002,lamp,1
-003,desk,1
-004,no_name_given,1
-005,no_name_given,1
-006,no_name_given,1
-007,no_name_given,1
+001,desk,3
+0001,no_name_given,1
+002,lamp,3
+003,chair,6

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #Written by Liam Amadio
 #01/12/2020
 import csv
