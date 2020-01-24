@@ -1,1 +1,1 @@
-database = {"001":"desk","002":"lamp","003":"chair",}
+database = {"001":"lamp","002":"desk","003":"keyboard","004":"pencil",}
