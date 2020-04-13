@@ -1,18 +1,22 @@
-#!/usr/bin/env python3
 #Written by Liam Amadio
-#09/19/2020
 import time
 
-newFile = open('database_reference.py','w+')
-newFile.write('database = {')
 
 while True:
+    fileName = input("Enter name of database to create: ")
+    if fileName != "":
+        break
+    else:
+        print("Enter a valid name")
+
+newFile = open('./databases/{}.csv'.format(fileName), 'w+')
+newFile.write('name,uid\n')
+while True:
     uid = input('Scan barcode (press enter when done): ')
-    time.sleep(0.25)
+    time.sleep(0.15)
     if uid == '':
         break
     name = input('Enter name of item and press enter: ')
+    newFile.write('{},{}\n'.format(name,uid))
 
-    newFile.write('"{}":"{}",'.format(uid,name))
-
-newFile.write('}')
+myFile.close()

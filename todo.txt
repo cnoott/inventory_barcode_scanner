@@ -1,5 +1,0 @@
-TODO
------
-1. Fix bug in which if the user doesnt assign a name to a UID in database_creator.py, the UID/Name will not pop up in the output file(done)
-
-2. Maybe its best that the terminal opens with program by default (maybe have an option to select database scanner from inventory scanner program).

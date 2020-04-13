@@ -1,0 +1,1 @@
+database = {"6666":"devil","420":"weed",}
