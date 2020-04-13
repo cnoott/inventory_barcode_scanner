@@ -1,8 +1,10 @@
 from item import Item
 import csv
 import os
+from os import walk
 from inventories import meta
-from datetime import date
+import time
+import datetime
 
 def scanItems():
     itemList = []
@@ -19,6 +21,7 @@ def scanItems():
 
     with open('./databases/{}'.format(directoryList[int(chosenFile)-1])) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
+        next(csv_reader) #skips row with name,uid
         for row in csv_reader:
             itemList.append(Item(row[0],row[1])) #creates list of Item objects
 
@@ -32,8 +35,24 @@ def scanItems():
            break
        uidList.append(uid)
 
-    for i in size(uidList):
-        print(i)
+    for uid in uidList:
+            counter = 0
+            for item in itemList:
+                if uid == item.uid:
+                    counter += 1
+            if counter == 0:
+                itemList.append( Item('no name',uid))
+                print("Error: ", uid, "not in database; given name 'no_name'")
+
+    for uid in uidList:
+        for item in itemList:
+            if uid == item.uid:
+                item.incrimentQty()
+
+    with open("./inventories/inventory_{}.csv".format(datetime.date.today()),"w+") as output:
+        output.write("name,qty,uid\n")
+        for item in itemList:
+            output.write("{},{},{}\n".format(item.name,item.qty,item.uid))
 
 
 def endPeriod():
@@ -51,7 +70,7 @@ def endPeriod():
 
 def newPeriod():
     '''
-    creates new folder and modifies meta.py
+    creates new folder and modifies meta.py to include new period name
     '''
     newPeriodName = input("Enter name of new period:")
     newMeta = open("./inventories/meta.py","w")
@@ -81,7 +100,6 @@ while True:
         break
     else:
         print("Invalid option, try again")
-        break
 
 
 

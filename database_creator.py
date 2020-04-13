@@ -19,4 +19,4 @@ while True:
     name = input('Enter name of item and press enter: ')
     newFile.write('{},{}\n'.format(name,uid))
 
-myFile.close()
+newFile.close()

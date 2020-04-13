@@ -1,7 +1,7 @@
 #item class
 
 class Item:
-    def __init__(self, name='no name', qty = 0, uid = 'no barcode'):
+    def __init__(self, name='no name', uid = 'no_barcode', qty = 0):
         self.name = name
         self.qty = qty
         self.uid = uid
