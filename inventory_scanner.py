@@ -9,6 +9,7 @@ from datetime import datetime
 from datetime import date
 from inventories import meta
 import settings
+
 def changeDatabase():
     directoryList = []
     for r, d, f in walk("./databases/"): #creates list of file in directory
@@ -75,7 +76,11 @@ def scanItems():
         openFile.close()
 
         for item in itemList:
-            output.write("{},{},{}\n".format(item.name,item.qty,item.uid))
+            output.write("{},{},{}\n".format(item.name,item.qty,item.uid)) 
+    sumPeriod()
+    python = sys.executable #restarts program
+    os.execl(python, python, * sys.argv)
+
 
 
 def endPeriod():
@@ -92,6 +97,8 @@ def endPeriod():
         oldFile.write("DATE ENDED: {} ".format(today))
         oldFile.flush()
         oldFile.close()
+        python = sys.executable
+        os.execl(python, python, * sys.argv)
 
 def newPeriod():
     '''
@@ -117,14 +124,71 @@ def newPeriod():
     os.execl(python, python, * sys.argv)
 
 
+def sumPeriod():
+    '''
+    Takes all of the inventory files in a period and creates a main file with the sum of all inventory quantities
+    '''
+    directoryList = []
+
+    for r,d,f in walk("./inventories/{}".format(meta.lastPeriod)):
+        for files in f:
+            if files != "periodinfo.txt": #exclusing period info
+                directoryList.append(files)
+
+
+    listofItems=[] #list of Item objects
+    for files in directoryList:
+        itemList = []
+        with open('./inventories/{}/{}'.format(meta.lastPeriod, files)) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            next(csv_reader) #skips row with titles
+            for row in csv_reader:
+                itemList.append(Item(row[0],row[2],row[1]))
+            listofItems.append(itemList)
+
+
+    sumItem = [] #an Item object list that contains the sum
+    tempUid = []
+
+    for lists in range(len(listofItems)):
+        for items in listofItems[lists]:
+            if items.uid not in tempUid:
+                tempUid.append(items.uid)
+                sumItem.append(Item(items.name,items.uid))
+
+
+    for items in sumItem:
+        for lists in range(len(listofItems)):
+            for qtys in listofItems[lists]:
+                if items.uid == qtys.uid:
+                    items.qty = int(items.qty) + int(qtys.qty)
+
+
+    outFile = open('./inventories/{}/sum_of_inventories.csv'.format(meta.lastPeriod),'w')
+    outFile.write('name,qty,uid\n')
+    for items in sumItem:
+        outFile.write('{},{},{}\n'.format(items.name,items.qty,items.uid))
+    outFile.close()
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
+
+
+
+
+
+
 
 
 
 while True:
-    option = input("1. Start Scanning 2. Start a new period 3. Change database 4. Help\n Choose an option: ")
+    sumPeriod()
+    if settings.currentDatabase == "":
+        print("WARNING: No database detected, please run database_creator.py")
+    if meta.lastPeriod == "":
+        print("WARNING: No period started. Select option 2 to start a new period")
+    option = input("1. Start Scanning 2. Start a new period 3. Change database 4. Help 5. Exit\n Choose an option: ")
     if option == "1":
-        scanItems()
-        break
+        scanItems() #sumPeriod() called within scanItems()
     elif option == "2":
         endPeriod()
         newPeriod()
@@ -133,7 +197,9 @@ while True:
     elif option == "4":
         print("HELP PAGE:\n To start scanning, type 1 and press enter\n To start a new inventory scan period type 2 and press enter.\n")
         print("WHAT IS A SCAN PERIOD?: A scan period is a folder than contains all the scans done within the specified period, including a master file that contains the sum of all scans done within said period. Creating a new period stops the current one, creating a new folder that will contain the next scan period.")
-        break
+        contin = input("Press ENTER to continue")
+    elif option == "5":
+        exit()
     else:
         print("Invalid option, try again")
 

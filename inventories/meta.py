@@ -1,2 +1,2 @@
-lastPeriod = 'period3'
-numInv = 1
+lastPeriod = 'period2'
+numInv = 9
