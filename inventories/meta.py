@@ -1,2 +1,2 @@
-lastPeriod = 'period2'
+lastPeriod = 'period3'
 numInv = 1

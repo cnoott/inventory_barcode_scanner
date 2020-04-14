@@ -8,21 +8,28 @@ import datetime
 from datetime import datetime
 from datetime import date
 from inventories import meta
-def scanItems():
-
-    itemList = []
+import settings
+def changeDatabase():
     directoryList = []
     for r, d, f in walk("./databases/"): #creates list of file in directory
         directoryList.extend(f)
         break
-
     print("Choose database to scan from: ")
+    x = 1
     for files in directoryList:
-        print("1. ",files)
+        print(x, files)
+        x += 1
+    chosenFile = input("Type the number of the database you want to access")
+    writeFile = open('./settings.py','w')
+    writeFile.write("currentDatabase = '{}'".format(directoryList[int(chosenFile)-1]))
+    writeFile.close()
+    python = sys.executable #restarts program
+    os.execl(python, python, * sys.argv)
 
-    chosenFile = input("Type in the number of the database you want to access")
+def scanItems():
+    itemList = []
 
-    with open('./databases/{}'.format(directoryList[int(chosenFile)-1])) as csv_file:
+    with open('./databases/{}'.format(settings.currentDatabase)) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         next(csv_reader) #skips row with name,uid
         for row in csv_reader:
@@ -114,7 +121,7 @@ def newPeriod():
 
 
 while True:
-    option = input("1. Start Scanning 2. Start a new period 3. Help\n Choose an option: ")
+    option = input("1. Start Scanning 2. Start a new period 3. Change database 4. Help\n Choose an option: ")
     if option == "1":
         scanItems()
         break
@@ -122,6 +129,8 @@ while True:
         endPeriod()
         newPeriod()
     elif option == "3":
+        changeDatabase()
+    elif option == "4":
         print("HELP PAGE:\n To start scanning, type 1 and press enter\n To start a new inventory scan period type 2 and press enter.\n")
         print("WHAT IS A SCAN PERIOD?: A scan period is a folder than contains all the scans done within the specified period, including a master file that contains the sum of all scans done within said period. Creating a new period stops the current one, creating a new folder that will contain the next scan period.")
         break
