@@ -1,5 +1,0 @@
-PERIOD INFO
-DATE CREATED:2020-04-14
-Inventory scans:
-inventory_1 created:: 14/04/2020 20:06:08
-inventory_1 created:: 14/04/2020 20:06:18

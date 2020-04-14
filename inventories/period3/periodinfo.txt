@@ -1,8 +1,0 @@
-PERIOD INFO
-DATE CREATED:2020-04-14
-Inventory scans:
-inventory_1 created:: 14/04/2020 19:32:33
-inventory_2 created:: 14/04/2020 19:32:44
-inventory_3 created:: 14/04/2020 19:58:55
-inventory_4 created:: 14/04/2020 20:02:07
-DATE ENDED: 2020-04-14 

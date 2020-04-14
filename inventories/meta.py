@@ -1,2 +1,2 @@
-lastPeriod = 'newperiod'
-numInv = 1
+lastPeriod = ''
+numInv = 0

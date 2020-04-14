@@ -68,6 +68,7 @@ def scanItems():
         metaFile.write("lastPeriod = '{}'\n".format(meta.lastPeriod))
         metaFile.write("numInv = {}\n".format(newnumInv))
         metaFile.flush()
+        os.fsync(metaFile.fileno())
         metaFile.close()
         openFile = open("./inventories/{}/periodinfo.txt".format(meta.lastPeriod), 'a+') #adds meta info to periodinfo.txt
         now = datetime.now(); dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
@@ -77,7 +78,10 @@ def scanItems():
 
 
         for item in itemList:
-            output.write("{},{},{}\n".format(item.name,item.qty,item.uid)) 
+            output.write("{},{},{}\n".format(item.name,item.qty,item.uid))
+    sumPeriod()
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
 
 
 def endPeriod():
@@ -93,6 +97,7 @@ def endPeriod():
         today = date.today()
         oldFile.write("DATE ENDED: {} ".format(today))
         oldFile.flush()
+        os.fsync(oldFile.fileno())
         oldFile.close()
 
 def newPeriod():
@@ -127,7 +132,7 @@ def sumPeriod():
     print("Calculating sum")
     for r,d,f in walk("./inventories/{}".format(meta.lastPeriod)):
         for files in f:
-            if files != "periodinfo.txt": #exclusing period info
+            if files != "periodinfo.txt" and files !="sum_of_inventories.csv": #exclusing period info
                 directoryList.append(files)
 
 
@@ -168,11 +173,6 @@ def sumPeriod():
 
 
 
-
-
-
-
-
 while True:
     if settings.currentDatabase == "":
         print("WARNING: No database detected, please run database_creator.py")
@@ -180,8 +180,6 @@ while True:
         print("WARNING: No period started. Select option 2 to start a new period")
     option = input("1. Start Scanning 2. Start a new period 3. Change database 4. Help 5. Exit\n Choose an option: ")
     if option == "1":
-        if meta.lastPeriod != "":
-            sumPeriod()
         scanItems() #sumPeriod() called within scanItems()
     elif option == "2":
         endPeriod()
