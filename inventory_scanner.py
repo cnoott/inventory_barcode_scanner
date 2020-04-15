@@ -75,12 +75,9 @@ def scanItems():
         openFile.flush()
         openFile.close()
 
+
         for item in itemList:
             output.write("{},{},{}\n".format(item.name,item.qty,item.uid)) 
-    sumPeriod()
-    python = sys.executable #restarts program
-    os.execl(python, python, * sys.argv)
-
 
 
 def endPeriod():
@@ -97,8 +94,6 @@ def endPeriod():
         oldFile.write("DATE ENDED: {} ".format(today))
         oldFile.flush()
         oldFile.close()
-        python = sys.executable
-        os.execl(python, python, * sys.argv)
 
 def newPeriod():
     '''
@@ -129,7 +124,7 @@ def sumPeriod():
     Takes all of the inventory files in a period and creates a main file with the sum of all inventory quantities
     '''
     directoryList = []
-
+    print("Calculating sum")
     for r,d,f in walk("./inventories/{}".format(meta.lastPeriod)):
         for files in f:
             if files != "periodinfo.txt": #exclusing period info
@@ -169,8 +164,6 @@ def sumPeriod():
     for items in sumItem:
         outFile.write('{},{},{}\n'.format(items.name,items.qty,items.uid))
     outFile.close()
-    python = sys.executable
-    os.execl(python, python, * sys.argv)
 
 
 
@@ -181,13 +174,14 @@ def sumPeriod():
 
 
 while True:
-    sumPeriod()
     if settings.currentDatabase == "":
         print("WARNING: No database detected, please run database_creator.py")
     if meta.lastPeriod == "":
         print("WARNING: No period started. Select option 2 to start a new period")
     option = input("1. Start Scanning 2. Start a new period 3. Change database 4. Help 5. Exit\n Choose an option: ")
     if option == "1":
+        if meta.lastPeriod != "":
+            sumPeriod()
         scanItems() #sumPeriod() called within scanItems()
     elif option == "2":
         endPeriod()
