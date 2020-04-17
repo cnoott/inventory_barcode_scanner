@@ -1,8 +1,0 @@
-Last Inventory Scanned: 2020-04-16
-ast Inventory Scanned: 2020-04-16
-OLDER INFO
-===========
-Date Created: 2020-04-16
-Inventory scans:
-inventory_1 created:: 04/16/2020 20:17:32
-inventory_2 created:: 04/16/2020 20:17:46

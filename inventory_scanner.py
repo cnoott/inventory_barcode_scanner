@@ -198,6 +198,7 @@ def sumFolder(chosenDir):
 
 
 
+print("Inventory Barcode Scanner version 2.0\n")
 while True:
     if settings.currentDatabase == "":
         print("WARNING: No database detected, please run database_creator.py")
