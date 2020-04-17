@@ -1,2 +1,0 @@
-lastPeriod = ''
-numInv = 0

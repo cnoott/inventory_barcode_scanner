@@ -7,8 +7,57 @@ import time
 import datetime
 from datetime import datetime
 from datetime import date
-from inventories import meta
 import settings
+#VARIABLE CONSTANTS
+INVENTORY_DIR = "./inventories"
+
+def programRestart():
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
+
+def createFolder():
+    '''
+    creates a new folder within the inventories directory in which new inventories will be stored. This also creates a meta file in which it will hold inventory names
+    '''
+    #Creates folder
+    newFolderName = input("Enter name of new folder:")
+    os.mkdir("{}/{}".format(INVENTORY_DIR, newFolderName))
+
+    #Writes  meta file that contains the last inventory name number
+    newMeta = open("{}/{}/.meta.txt".format(INVENTORY_DIR, newFolderName),"w")
+    newMeta.write("0") #remember to convert to int later on
+    newMeta.flush(); newMeta.close()
+
+    #Writes folder data file
+    folderInfo = open("{}/{}/FOLDER_INFO.txt".format(INVENTORY_DIR,newFolderName),"w")
+    folderInfo.write("FOLDER INFO\n===========\nDate Created: {}\n".format(date.today()))
+    folderInfo.write("Inventory scans:\n")
+    folderInfo.flush(); folderInfo.close()
+
+    programRestart()
+
+
+def chooseFolder():
+    '''
+    lists folders in inventories directory and returns chosen folder as string
+    '''
+    directoryList = []
+    for r, d, f in walk("{}/".format(INVENTORY_DIR)): #stores avaliable directories in list
+        directoryList.extend(d)
+        break
+    x = 1
+    for folder in directoryList:
+        print(x, folder)
+        x += 1
+    while True:
+        chosenDir = int(input("Choose a folder to start scanning in: "))
+        if chosenDir-1 not in range(len(directoryList)):
+            print("Invalid option, try again")
+        else:
+            directory = directoryList[chosenDir - 1]
+            break
+    return directory
+
 
 def changeDatabase():
     directoryList = []
@@ -28,6 +77,8 @@ def changeDatabase():
     os.execl(python, python, * sys.argv)
 
 def scanItems():
+
+    chosenDir = chooseFolder()
     itemList = []
 
     with open('./databases/{}'.format(settings.currentDatabase)) as csv_file:
@@ -60,86 +111,60 @@ def scanItems():
             if uid == item.uid:
                 item.incrimentQty()
 
-    #writing to file
-    newnumInv = meta.numInv + 1
-    with open("./inventories/{}/inventory_{}.csv".format(meta.lastPeriod, newnumInv),"w+") as output: 
+    meta = open("{}/{}/.meta.txt".format(INVENTORY_DIR,chosenDir),"r")
+    num = meta.readline()
+    meta.close()
+    newMeta = open("{}/{}/.meta.txt".format(INVENTORY_DIR,chosenDir),"w") #updates file
+    num = int(num) + 1 #determines name for inventory file 
+    newMeta.write("{}".format(num))
+    newMeta.close()
+
+    #writing to file    
+    with open("{}/{}/inventory_{}.csv".format(INVENTORY_DIR,chosenDir, num),"w+") as output: 
         output.write("name,qty,uid\n")
-        metaFile = open("./inventories/meta.py","w") #updates meta file with new numInv value
-        metaFile.write("lastPeriod = '{}'\n".format(meta.lastPeriod))
-        metaFile.write("numInv = {}\n".format(newnumInv))
-        metaFile.flush()
-        os.fsync(metaFile.fileno())
-        metaFile.close()
-        openFile = open("./inventories/{}/periodinfo.txt".format(meta.lastPeriod), 'a+') #adds meta info to periodinfo.txt
-        now = datetime.now(); dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-        openFile.write("inventory_{} created:: {}\n".format(newnumInv,dt_string) )
+        openFile = open("{}/{}/FOLDER_INFO.txt".format(INVENTORY_DIR,chosenDir), 'a+') #adds meta info to periodinfo.txt
+        now = datetime.now(); dt_string = now.strftime("%m/%d/%Y %H:%M:%S")
+        openFile.write("inventory_{} created:: {}\n".format(num,dt_string) )
         openFile.flush()
         openFile.close()
 
 
         for item in itemList:
             output.write("{},{},{}\n".format(item.name,item.qty,item.uid))
-    sumPeriod()
-    python = sys.executable
-    os.execl(python, python, * sys.argv)
+
+    sumFolder(chosenDir)
+    programRestart()
 
 
-def endPeriod():
+def updateFolder(chosenDir): #unused for now, may impliment later onced fixed but for now its redundatn
     '''
-    ends period and modifies periodinfo.txt
+    updates folder with LAST ACCESSED. This will be called in the scanItems() function
     '''
-    from inventories import meta
-    if meta.lastPeriod == "":
-        pass
-    else:
-        print("Ending period...")
-        oldFile = open("./inventories/{}/periodinfo.txt".format(meta.lastPeriod), 'a+')
-        today = date.today()
-        oldFile.write("DATE ENDED: {} ".format(today))
-        oldFile.flush()
-        os.fsync(oldFile.fileno())
-        oldFile.close()
+    with open("{}/{}/FOLDER_INFO.txt".format(INVENTORY_DIR,chosenDir),'r') as contents:
+        save = contents.read()[1:]
 
-def newPeriod():
-    '''
-    creates new folder and modifies meta.py to include new period name
-    '''
-    newPeriodName = input("Enter name of new period:")
-    newMeta = open("./inventories/meta.py","w")
-    newMeta.write("lastPeriod = '{}'\n".format(newPeriodName)) #overwrite old meta file
-    newMeta.write("numInv = 0\n")
-    newMeta.flush()
-    os.fsync(newMeta.fileno())
-    newMeta.close()
-    os.mkdir("./inventories/{}".format(newPeriodName))
+    with open("{}/{}/FOLDER_INFO.txt".format(INVENTORY_DIR,chosenDir),'w') as contents:
+        contents.write("Last Inventory Scanned: {}\n".format(date.today()))
 
-    periodInfo = open('./inventories/{}/periodinfo.txt'.format(newPeriodName), 'w') #initializes periodinfo.txt 
-    today = date.today() #gets current date
-    periodInfo.write("PERIOD INFO\nDATE CREATED:{}\n".format(today))
-    periodInfo.write("Inventory scans:\n")
-    periodInfo.flush()
-    periodInfo.close()
-    #restarting program
-    python = sys.executable
-    os.execl(python, python, * sys.argv)
+    with open("{}/{}/FOLDER_INFO.txt".format(INVENTORY_DIR,chosenDir),'a') as contents:
+        contents.write(save)
 
 
-def sumPeriod():
+def sumFolder(chosenDir):
     '''
-    Takes all of the inventory files in a period and creates a main file with the sum of all inventory quantities
+    Takes all of the inventory files in a chosen directory and creates a main file with the sum of all inventory quantities. Will be called in scanItems() function
     '''
     directoryList = []
-    print("Calculating sum")
-    for r,d,f in walk("./inventories/{}".format(meta.lastPeriod)):
+    for r,d,f in walk("{}/{}".format(INVENTORY_DIR,chosenDir)):
         for files in f:
-            if files != "periodinfo.txt" and files !="sum_of_inventories.csv": #exclusing period info
+            if files != "FOLDER_INFO.txt" and files !="sum_of_inventories.csv": #exclusing period info
                 directoryList.append(files)
 
 
     listofItems=[] #list of Item objects
     for files in directoryList:
         itemList = []
-        with open('./inventories/{}/{}'.format(meta.lastPeriod, files)) as csv_file:
+        with open('{}/{}/{}'.format(INVENTORY_DIR,chosenDir, files)) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             next(csv_reader) #skips row with titles
             for row in csv_reader:
@@ -164,7 +189,7 @@ def sumPeriod():
                     items.qty = int(items.qty) + int(qtys.qty)
 
 
-    outFile = open('./inventories/{}/sum_of_inventories.csv'.format(meta.lastPeriod),'w')
+    outFile = open('./{}/{}/sum_of_inventories.csv'.format(INVENTORY_DIR,chosenDir),'w')
     outFile.write('name,qty,uid\n')
     for items in sumItem:
         outFile.write('{},{},{}\n'.format(items.name,items.qty,items.uid))
@@ -176,19 +201,30 @@ def sumPeriod():
 while True:
     if settings.currentDatabase == "":
         print("WARNING: No database detected, please run database_creator.py")
-    if meta.lastPeriod == "":
-        print("WARNING: No period started. Select option 2 to start a new period")
-    option = input("1. Start Scanning 2. Start a new period 3. Change database 4. Help 5. Exit\n Choose an option: ")
+
+    if not os.listdir(INVENTORY_DIR):
+        print("WARNING: No folders detected, select option 2 to create a new folder")
+
+    #put error handlign for no folder
+    option = input("1. Start Scanning 2. Create new folder 3. settings 4. Help 5. Exit\n Choose an option: ")
     if option == "1":
-        scanItems() #sumPeriod() called within scanItems()
+        if not os.listdir(INVENTORY_DIR):
+            print("ERROR: no new folder created, select option 2 to create a new folder")
+        else:
+            scanItems()
     elif option == "2":
-        endPeriod()
-        newPeriod()
+        createFolder()
     elif option == "3":
-        changeDatabase()
+        settingsOption = input("1. Change settings \nChoose an option")
+        while True:
+            if settingsOption == "1":
+                changeDatabase()
+                break
+            else:
+                print("Choose a valid option")
     elif option == "4":
-        print("HELP PAGE:\n To start scanning, type 1 and press enter\n To start a new inventory scan period type 2 and press enter.\n")
-        print("WHAT IS A SCAN PERIOD?: A scan period is a folder than contains all the scans done within the specified period, including a master file that contains the sum of all scans done within said period. Creating a new period stops the current one, creating a new folder that will contain the next scan period.")
+        print("HELP PAGE:\n To start scanning, type 1 and press enter\n\n To create a new folder type 2 and press enter.\n")
+
         contin = input("Press ENTER to continue")
     elif option == "5":
         exit()
