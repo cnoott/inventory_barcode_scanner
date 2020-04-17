@@ -11,9 +11,6 @@ import settings
 #VARIABLE CONSTANTS
 INVENTORY_DIR = "./inventories"
 
-def programRestart():
-    python = sys.executable
-    os.execl(python, python, * sys.argv)
 
 def createFolder():
     '''
@@ -34,7 +31,6 @@ def createFolder():
     folderInfo.write("Inventory scans:\n")
     folderInfo.flush(); folderInfo.close()
 
-    programRestart()
 
 
 def chooseFolder():
@@ -73,8 +69,6 @@ def changeDatabase():
     writeFile = open('./settings.py','w')
     writeFile.write("currentDatabase = '{}'".format(directoryList[int(chosenFile)-1]))
     writeFile.close()
-    python = sys.executable #restarts program
-    os.execl(python, python, * sys.argv)
 
 def scanItems():
 
@@ -133,7 +127,6 @@ def scanItems():
             output.write("{},{},{}\n".format(item.name,item.qty,item.uid))
 
     sumFolder(chosenDir)
-    programRestart()
 
 
 def updateFolder(chosenDir): #unused for now, may impliment later onced fixed but for now its redundatn

@@ -1,1 +1,1 @@
-currentDatabase = ""
+currentDatabase = ''
