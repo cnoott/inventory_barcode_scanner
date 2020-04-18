@@ -1,1 +1,1 @@
-currentDatabase = 'database_main.csv'
+currentDatabase = ''
