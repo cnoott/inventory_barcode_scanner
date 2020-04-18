@@ -219,7 +219,7 @@ while True:
     if settings.currentDatabase == "":
         print(Fore.RED + "WARNING:" + Style.RESET_ALL+" No database detected, please run database_creator.py")
 
-    if not os.listdir(INVENTORY_DIR):
+    if not os.listdir(INVENTORY_DIR)[1:]:
         print(Fore.RED + "WARNING:" + Style.RESET_ALL + " No folders detected, select option 2 to create a new folder\n")
 
     #put error handlign for no folder
