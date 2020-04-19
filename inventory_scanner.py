@@ -1,5 +1,4 @@
 from item import Item
-from colorama import Fore, Back, Style
 import csv
 import os
 import sys
@@ -20,7 +19,8 @@ def createFolder():
     '''
     #Creates folder
     os.system('clear')
-    print(Fore.GREEN + "  \n-= Inventory Barcode Scanner v2.3 =- \n" + Style.RESET_ALL)
+    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.3 =- \n\033[0m")
+
     try:
         print(Fore.BLACK + Back.WHITE +"\nCREATE FOLDER" + Style.RESET_ALL)
         newFolderName = input("Enter name of new folder (type c to cancel): ")
@@ -51,13 +51,13 @@ def chooseFolder():
     '''
     lists folders in inventories directory and returns chosen folder as string
     '''
-    print(Fore.GREEN + "  \n-= Inventory Barcode Scanner v2.3 =- \n" + Style.RESET_ALL)
+    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.3 =- \n\033[0m")
     directoryList = []
     for r, d, f in walk("{}/".format(INVENTORY_DIR)): #stores avaliable directories in list
         directoryList.extend(d)
         break
     x = 1
-    print(Fore.BLACK + Back.WHITE + "CHOOSE FOLDER" + Style.RESET_ALL)
+    print("\033[0;30;47mCHOOSE FOLDER\033[0m")
     for folder in directoryList:
         print("{}. {}".format(x,folder))
         x += 1
@@ -102,7 +102,7 @@ def scanItems():
     #scanning
     uidList = [] #input goes here
     os.system('clear')
-    print(Fore.GREEN + "  \n-= Inventory Barcode Scanner v2.3 =- \n" + Style.RESET_ALL) #title
+    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.3 =- \n\033[0m") #title              
     print("BEGIN SCANNING")
     while True:
        uid = input(">> ")
@@ -118,7 +118,7 @@ def scanItems():
                     counter += 1
             if counter == 0:
                 itemList.append( Item('no name',uid))
-                print(Fore.RED+"Error:"+Style.RESET_ALL + " Barcode ", uid, "not in database; given name 'no_name'")
+                print("\033[1;31;40m Error: \033[0mBarcode ", uid, "not in database; given name 'no_name'")
                 contin = input("Press ENTER to continue")
 
     for uid in uidList:
@@ -214,20 +214,20 @@ def sumFolder(chosenDir):
 
 
 while True:
-    os.system('clear') 
-    print(Fore.GREEN + "  \n-= Inventory Barcode Scanner v2.3 =- \n" + Style.RESET_ALL)
+    os.system('clear')
+    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.3 =- \n\033[0m")
     if settings.currentDatabase == "":
-        print(Fore.RED + "WARNING:" + Style.RESET_ALL+" No database detected, please run database_creator.py")
+        print("\033[1;31;40m WARNING:\033[0m No database detected, please run database_creator.py")
 
     if not os.listdir(INVENTORY_DIR)[1:]:
-        print(Fore.RED + "WARNING:" + Style.RESET_ALL + " No folders detected, select option 2 to create a new folder\n")
+        print("\033[1;31;40m WARNING:\033[0m No folders detected, select option 2 to create a new folder\n") 
 
     #put error handlign for no folder
     option = input("1. Start Scanning 2. Create new folder 3. settings 4. Help 5. Exit\n Choose an option and press ENTER: ")
     if option == "1":
         os.system('clear')
         if not os.listdir(INVENTORY_DIR)[1:]:
-            print(Fore.RED + "ERROR:"+ Style.RESET_ALL + " no new folder created, select option 2 to create a new folder")
+            print("\033[1;31;40m ERROR:\033[0m no new folder created, select option 2 to create a new folder")
             contin = input("Press ENTER to continue")
         else:
             scanItems()
