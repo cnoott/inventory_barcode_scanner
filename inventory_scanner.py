@@ -22,7 +22,7 @@ def createFolder():
     print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.3 =- \n\033[0m")
 
     try:
-        print(Fore.BLACK + Back.WHITE +"\nCREATE FOLDER" + Style.RESET_ALL)
+        print("\033[1;30;47m\nCREATE FOLDER\033[0m")
         newFolderName = input("Enter name of new folder (type c to cancel): ")
         if newFolderName == 'c':
             print('canceled')
