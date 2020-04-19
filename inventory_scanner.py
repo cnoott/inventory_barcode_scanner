@@ -226,8 +226,9 @@ while True:
     option = input("1. Start Scanning 2. Create new folder 3. settings 4. Help 5. Exit\n Choose an option and press ENTER: ")
     if option == "1":
         os.system('clear')
-        if not os.listdir(INVENTORY_DIR):
+        if not os.listdir(INVENTORY_DIR)[1:]:
             print(Fore.RED + "ERROR:"+ Style.RESET_ALL + " no new folder created, select option 2 to create a new folder")
+            contin = input("Press ENTER to continue")
         else:
             scanItems()
     elif option == "2":
