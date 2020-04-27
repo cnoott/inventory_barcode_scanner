@@ -19,7 +19,7 @@ def createFolder():
     '''
     #Creates folder
     os.system('clear')
-    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.3 =- \n\033[0m")
+    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.4 =- \n\033[0m")
 
     try:
         print("\033[1;30;47m\nCREATE FOLDER\033[0m")
@@ -51,7 +51,7 @@ def chooseFolder():
     '''
     lists folders in inventories directory and returns chosen folder as string
     '''
-    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.3 =- \n\033[0m")
+    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.4 =- \n\033[0m")
     directoryList = []
     for r, d, f in walk("{}/".format(INVENTORY_DIR)): #stores avaliable directories in list
         directoryList.extend(d)
@@ -102,10 +102,10 @@ def scanItems():
     #scanning
     uidList = [] #input goes here
     os.system('clear')
-    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.3 =- \n\033[0m") #title              
+    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.4 =- \n\033[0m") #title              
     print("BEGIN SCANNING")
     while True:
-       uid = input(">> ")
+       uid = str(input(">> "))
        time.sleep(0.14)
        if uid == "":
            break
@@ -114,7 +114,7 @@ def scanItems():
     for uid in uidList: #error prevention: for when theres a barcode that isnt within the database
             counter = 0
             for item in itemList:
-                if uid == item.uid:
+                if uid == str(item.uid):
                     counter += 1
             if counter == 0:
                 itemList.append( Item('no name',uid))
@@ -215,7 +215,7 @@ def sumFolder(chosenDir):
 
 while True:
     os.system('clear')
-    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.3 =- \n\033[0m")
+    print("\033[1;32;40m \n-= Inventory Barcode Scanner v2.4 =- \n\033[0m")
     if settings.currentDatabase == "":
         print("\033[1;31;40m WARNING:\033[0m No database detected, please run database_creator.py")
 

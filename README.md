@@ -1,4 +1,4 @@
-# Inventory Barcode Scanner v2.3
+# Inventory Barcode Scanner v2.4
 
 Inventory Barcode Scanner is command line interface inventory keeping utility that allows the user to:
 - Create their own database of barcodes and respective names
